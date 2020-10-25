@@ -120,7 +120,10 @@ let make = () => {
       </div>
       <div className="flex flex-col w-0 flex-1 overflow-hidden">
         <div
-          className="md:hidden relative z-10 flex-shrink-0 flex h-16 bg-white shadow">
+          className="md:hidden relative z-10 flex-shrink-0 flex h-16 bg-white shadow justify-between">
+          <div className="flex-shrink-0 flex p-2">
+            <img className="h-12 w-auto mr-2" src=logo alt="Ayushma" />
+          </div>
           <button
             onClick={_ => setShowNav(nav => !nav)}
             className="px-4 text-gray-500 focus:outline-none focus:bg-gray-100 focus:text-gray-600 md:hidden">
