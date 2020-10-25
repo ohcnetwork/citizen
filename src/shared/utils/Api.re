@@ -80,3 +80,18 @@ let create = (url, payload, responseCB, errorCB) =>
 
 let update = (url, payload, responseCB, errorCB) =>
   sendPayload(url, payload, responseCB, errorCB, Patch);
+
+let get = (url, responseCB, errorCB) =>
+  Fetch.fetch(url) |> handleResponse(responseCB, errorCB);
+
+let getWithToken = (url, token, responseCB, errorCB) =>
+  Fetch.fetchWithInit(
+    url,
+    Fetch.RequestInit.make(
+      ~method_=Get,
+      ~headers=Fetch.HeadersInit.make({"authorization": "Bearer " ++ token}),
+      ~credentials=Fetch.SameOrigin,
+      (),
+    ),
+  )
+  |> handleResponse(responseCB, errorCB);

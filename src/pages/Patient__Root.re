@@ -12,6 +12,9 @@ let reducer = (state, action) =>
   switch (action) {
   | SetToken(token) => {...state, token: Some(token)}
   };
+let updateToken = (send, token) => {
+  send(SetToken(token));
+};
 
 [@react.component]
 let make = () => {
@@ -20,8 +23,8 @@ let make = () => {
   <div className="bg-white h-full">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 h-full">
       {switch (state.token) {
-       | Some(token) => str(token)
-       | None => <Patient__Login />
+       | Some(token) => <Patient__List token />
+       | None => <Patient__Login updateTokenCB={updateToken(send)} />
        }}
     </div>
   </div>;

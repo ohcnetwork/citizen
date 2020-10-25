@@ -1,21 +1,40 @@
+import {
+  alert,
+  notice,
+  info,
+  success,
+  error,
+  defaultModules,
+} from "@pnotify/core";
 
-import PNotify from "pnotify/dist/es/PNotify";
-import "pnotify/dist/PNotifyBrightTheme.css";
+import "@pnotify/core/dist/PNotify.css";
+import "@pnotify/core/dist/BrightTheme.css";
+import * as PNotifyMobile from "@pnotify/mobile";
+import "@pnotify/mobile/dist/PNotifyMobile.css";
+
+defaultModules.set(PNotifyMobile, {});
 
 const notify = (title, text, type) => {
-  const notification = PNotify.alert({
-    type: type,
-    title: title,
-    text: text,
-    styling: "brighttheme",
-    buttons: {
-      closer: false,
-      sticker: false
-    }
-  });
-  notification.refs.elem.addEventListener("click", () => {
-    notification.close();
-  });
+  const options = { title: title, text: text };
+  switch (type) {
+    case "alert":
+      alert(options);
+      break;
+    case "notice":
+      notice(options);
+      break;
+    case "info":
+      info(options);
+      break;
+    case "success":
+      success(options);
+      break;
+    case "error":
+      error(options);
+      break;
+    default:
+      notice(options);
+  }
 };
 
 export default notify;

@@ -43,7 +43,10 @@
     "reason-transition-group": "^2.1.1",
     "style-loader": "^0.23.1",
     "tailwindcss": "^1.8.3",
-    "url-loader": "^2.1.0"
+    "url-loader": "^2.1.0",
+    "@pnotify/animate": "^5.1.2",
+    "@pnotify/core": "^5.1.2",
+    "@pnotify/mobile": "^5.1.2"
   },
   "devDependencies": {
     "bs-platform": "^7.3.2",
