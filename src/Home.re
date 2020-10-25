@@ -27,6 +27,21 @@ let actions = url => {
       <i className="fas fa-book-medical mr-2" />
       {str("Medical Records")}
     </button>,
+    {
+      Storage.getToken()
+      ->Belt.Option.mapWithDefault(React.null, t =>
+          <button
+            key="logout"
+            onClick={_ => {
+              Storage.deleteToken();
+              ReasonReactRouter.push("./");
+            }}
+            className={buttonClasses(false)}>
+            <i className="fas fa-sign-out-alt mr-2" />
+            {str("Clear Token")}
+          </button>
+        );
+    },
   |];
 };
 

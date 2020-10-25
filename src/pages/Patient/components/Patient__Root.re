@@ -13,13 +13,15 @@ let reducer = (state, action) =>
   | SetToken(token) => {...state, token: Some(token)}
   };
 let updateToken = (send, token) => {
+  Storage.setToken(token);
   send(SetToken(token));
 };
 
 [@react.component]
 let make = () => {
   let (state, send) =
-    React.useReducer(reducer, {token: None, loading: false});
+    React.useReducer(reducer, {token: Storage.getToken(), loading: false});
+
   <div className="bg-white h-full">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 h-full">
       {switch (state.token) {

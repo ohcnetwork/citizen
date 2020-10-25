@@ -21,10 +21,11 @@ let handleResponseError = error => {
 
   switch (error) {
   | Some(code) when code == 401 =>
+    Storage.deleteToken();
     Notification.notice(
       code |> string_of_int,
       "Login Expired please login again",
-    )
+    );
   | Some(code) => Notification.error(code |> string_of_int, message)
   | None => Notification.error("An unexpected error occurred", message)
   };

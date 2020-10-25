@@ -199,3 +199,14 @@ button:disabled:focus,
 .button-xl {
   @apply py-2 px-6 text-base h-12;
 }
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
