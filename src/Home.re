@@ -1,5 +1,34 @@
 let str = React.string;
 let logo: string = [%raw "require('./assets/logo.png')"];
+let buttonClasses = bool => {
+  "w-full group flex items-center px-2 py-2 text-base leading-6 font-medium text-gray-600 rounded-md hover:text-gray-900 hover:bg-gray-50 focus:outline-none transition ease-in-out duration-150 "
+  ++ (bool ? "text-green-700" : "");
+};
+
+let actions = url => {
+  let current = {
+    switch (url) {
+    | ["patients"] => "patients"
+    | _ => ""
+    };
+  };
+  [|
+    <button
+      key="home"
+      onClick={_ => ReasonReactRouter.push("./")}
+      className="w-full group flex items-center px-2 py-2 text-base leading-6 font-medium text-gray-600 rounded-md hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:text-gray-900 focus:bg-gray-100 transition ease-in-out duration-150">
+      <i className="fas fa-home mr-2" />
+      {str("Dashboard")}
+    </button>,
+    <button
+      key="patients"
+      onClick={_ => ReasonReactRouter.push("/patients")}
+      className={buttonClasses(current == "patients")}>
+      <i className="fas fa-book-medical mr-2" />
+      {str("Medical Records")}
+    </button>,
+  |];
+};
 
 [@react.component]
 let make = () => {
@@ -48,12 +77,10 @@ let make = () => {
                      className="flex-shrink-0 flex justify-between items-center px-4">
                      <div className="flex-shrink-0 flex items-center">
                        <img
-                         className="h-12 w-auto mr-2"
+                         className="h-16 w-auto mr-2"
                          src=logo
                          alt="Ayushma"
                        />
-                       <div className="text-xl font-semibold text-gray-700" />
-                       {str("Ayushma")}
                      </div>
                      <button
                        className="btn" onClick={_ => setShowNav(nav => !nav)}>
@@ -62,18 +89,7 @@ let make = () => {
                    </div>
                    <div className="mt-5 flex-1 h-0 overflow-y-auto">
                      <nav className="px-2 space-y-1">
-                       <button
-                         href="#"
-                         onClick={_ => ReasonReactRouter.push("./")}
-                         className="w-full group flex items-center px-2 py-2 text-base leading-6 font-medium text-gray-600 rounded-md hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:text-gray-900 focus:bg-gray-100 transition ease-in-out duration-150">
-                         {str("Dashboard")}
-                       </button>
-                       <button
-                         href="#"
-                         onClick={_ => ReasonReactRouter.push("/patients")}
-                         className="w-full group flex items-center px-2 py-2 text-base leading-6 font-medium text-gray-600 rounded-md hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:text-gray-900 focus:bg-gray-100 transition ease-in-out duration-150">
-                         {str("Patients")}
-                       </button>
+                       {actions(url.path) |> React.array}
                      </nav>
                    </div>
                  </div>
@@ -91,26 +107,12 @@ let make = () => {
 
             <div
               className="flex flex-col flex-grow border-r border-gray-200 pt-5 pb-4 bg-white overflow-y-auto">
-              <div className="flex items-end flex-shrink-0 px-4">
-                <img className="h-12 w-auto mr-2" src=logo alt="Ayushma" />
-                <div className="text-xl font-semibold text-gray-700">
-                  {str("Ayushma")}
-                </div>
+              <div className="flex items-end flex-shrink-0 px-4 mx-auto">
+                <img className="h-16 w-auto mr-2" src=logo alt="Ayushma" />
               </div>
               <div className="mt-5 flex-grow flex flex-col">
-                <nav className="flex-1 px-2 bg-white space-y-1">
-                  <button
-                    href="#"
-                    onClick={_ => ReasonReactRouter.push("./")}
-                    className="w-full group flex items-center px-2 py-2 text-base leading-6 font-medium text-gray-600 rounded-md hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:text-gray-900 focus:bg-gray-100 transition ease-in-out duration-150">
-                    {str("Dashboard")}
-                  </button>
-                  <button
-                    href="#"
-                    onClick={_ => ReasonReactRouter.push("/patients")}
-                    className="w-full group flex items-center px-2 py-2 text-base leading-6 font-medium text-gray-600 rounded-md hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:text-gray-900 focus:bg-gray-100 transition ease-in-out duration-150">
-                    {str("Patients")}
-                  </button>
+                <nav className="flex-1 px-4 bg-white space-y-1">
+                  {actions(url.path) |> React.array}
                 </nav>
               </div>
             </div>
@@ -139,7 +141,12 @@ let make = () => {
         <main className="flex-1 relative overflow-y-auto focus:outline-none">
           {switch (url.path) {
            | ["patients"] => <Patient__Root />
-           | _ => React.null
+           | _ =>
+             <div
+               className="text-sm flex items-start justify-center mx-auto mt-20 font-semibold text-yellow-400">
+               <Faicon classes="fas fa wrench mr-2" />
+               {str("Work in progress, Visit Medical Records")}
+             </div>
            }}
         </main>
       </div>

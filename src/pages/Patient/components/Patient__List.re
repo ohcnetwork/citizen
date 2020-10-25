@@ -34,7 +34,7 @@ let getPatientsList = (send, token) => {
 let patientCardClasses = patient =>
   "flex flex-col md:flex-row items-start md:items-center justify-between bg-white border-l-3 p-3 md:py-6 md:px-5 mt-4 border-l-4 cursor-pointer rounded-r-lg shadow hover:border-primary-500 hover:text-primary-500 hover:shadow-md "
   ++ (
-    PatientInfo.isActive(patient) ? "border-green-500" : "border-orange-400"
+    PatientInfo.isActive(patient) ? "border-green-400" : "border-orange-400"
   );
 
 let showPatientCard = (patient, send) => {
@@ -83,9 +83,22 @@ let make = (~token) => {
   );
 
   <div className="max-w-3xl mx-auto h-full">
-    <h1 className="pt-6 text-gray-700 font-semibold text-3xl">
-      {str("Medical Records")}
-    </h1>
+    {switch (state.ui) {
+     | Loading
+     | Loaded =>
+       <h1 className="pt-6 text-gray-700 font-semibold text-3xl">
+         {str("Medical Records")}
+       </h1>
+     | ShowPatient(_patientInfo) =>
+       <div className="pt-4">
+         <button
+           onClick={_ => send(state => {...state, ui: Loaded})}
+           className="btn btn-default mb-2">
+           <i className="fas fa-arrow-left mr-2" />
+           {str("Back")}
+         </button>
+       </div>
+     }}
     {switch (state.ui) {
      | Loading =>
        SkeletonLoading.multiple(~count=3, ~element=SkeletonLoading.card())

@@ -13,7 +13,7 @@ let handleSucessCB = (send, response) => {
   //   response
   //   |> Json.Decode.(field("results", Json.Decode.array(PatientInfo.decode)));
   send(_ =>
-    Loaded("yes")
+    Loaded("WIP: Add consultation details")
   );
 };
 
@@ -27,39 +27,183 @@ let getPatientDetails = (id, send, token) => {
   );
 };
 
-let patientCardClasses = patient =>
-  "flex flex-col md:flex-row items-start md:items-center justify-between bg-white border-l-3 p-3 md:py-6 md:px-5 mt-4 border-l-4 cursor-pointer rounded-r-lg shadow hover:border-primary-500 hover:text-primary-500 hover:shadow-md "
-  ++ (
-    PatientInfo.isActive(patient) ? "border-green-500" : "border-orange-400"
-  );
-
 let showPatientCard = (patient, send) => {
-  <div key={PatientInfo.id(patient)} className={patientCardClasses(patient)}>
-    <div className="w-full md:w-3/4">
-      <div className="block text-sm md:pr-2">
-        <span className="ml-1 font-semibold text-base">
-          {str(
-             PatientInfo.name(patient)
-             ++ " - "
-             ++ string_of_int(PatientInfo.age(patient)),
-           )}
-        </span>
-      </div>
-      <div className="mt-1 ml-px text-xs text-gray-900">
-        <span className="ml-1">
-          {"Last updated on "
-           ++ PatientInfo.modifiedDate(patient)
-              ->DateFns.format("MMMM d, yyyy")
-           |> str}
-        </span>
+  Js.log(patient);
+  <div
+    key={PatientInfo.id(patient)}
+    className="rounded-lg shadow px-4 py-2 mt-4">
+    <div>
+      <h3 className="text-lg leading-6 font-medium text-gray-900">
+        {str("General")}
+      </h3>
+      <p className="max-w-2xl text-sm leading-5 text-gray-500">
+        {str("Demographic data")}
+      </p>
+    </div>
+    <div className="mt-5 border-t border-gray-200 pt-4">
+      <dl>
+        <div className="sm:grid sm:grid-cols-3 sm:gap-4">
+          <dt className="text-sm leading-5 font-medium text-gray-500">
+            {str("Date of Birth")}
+          </dt>
+          <dd
+            className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+            {str(PatientInfo.dateOfBirth(patient))}
+          </dd>
+        </div>
+        <div
+          className="mt-8 sm:grid sm:mt-5 sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+          <dt className="text-sm leading-5 font-medium text-gray-500">
+            {str("Mobile Number")}
+          </dt>
+          <dd
+            className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+            {str(PatientInfo.phoneNumber(patient))}
+          </dd>
+        </div>
+        <div
+          className="mt-8 sm:grid sm:mt-5 sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+          <dt className="text-sm leading-5 font-medium text-gray-500">
+            {str("Blood Group")}
+          </dt>
+          <dd
+            className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+            {str(
+               PatientInfo.bloodGroup(patient)
+               ->Belt.Option.getWithDefault("-"),
+             )}
+          </dd>
+        </div>
+        <div
+          className="mt-8 sm:grid sm:mt-5 sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+          <dt className="text-sm leading-5 font-medium text-gray-500">
+            {str("Emergency Contact number")}
+          </dt>
+          <dd
+            className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+            {str(PatientInfo.emergencyPhoneNumber(patient))}
+          </dd>
+        </div>
+        <div
+          className="mt-8 sm:grid sm:mt-5 sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+          <dt className="text-sm leading-5 font-medium text-gray-500">
+            {str("Address")}
+          </dt>
+          <dd
+            className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">
+            {str(PatientInfo.address(patient))}
+            {PatientInfo.pincode(patient)
+             ->Belt.Option.mapWithDefault(React.null, p =>
+                 <div> {str("Pincode: " ++ string_of_int(p))} </div>
+               )}
+            {PatientInfo.districtObject(patient)
+             ->Belt.Option.mapWithDefault(React.null, p =>
+                 <div> {str("District: " ++ District.name(p))} </div>
+               )}
+            {PatientInfo.localBodyObject(patient)
+             ->Belt.Option.mapWithDefault(React.null, p =>
+                 <div> {str("District: " ++ LocalBody.name(p))} </div>
+               )}
+            {PatientInfo.wardObject(patient)
+             ->Belt.Option.mapWithDefault(React.null, p =>
+                 <div> {str("District: " ++ Ward.name(p))} </div>
+               )}
+          </dd>
+        </div>
+        <div
+          className="mt-8 sm:grid sm:mt-5 sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+          <dt className="text-sm leading-5 font-medium text-gray-500">
+            {str("Gender")}
+          </dt>
+          <dd
+            className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">
+            {str(
+               switch (PatientInfo.gender(patient)) {
+               | 1 => "Male"
+               | 2 => "Female"
+               | _ => ""
+               },
+             )}
+          </dd>
+        </div>
+        <div
+          className="mt-8 sm:grid sm:mt-5 sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+          <dt className="text-sm leading-5 font-medium text-gray-500">
+            {str("Number Of Aged Dependents")}
+          </dt>
+          <dd
+            className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">
+            {str(string_of_int(PatientInfo.numberOfAgedDependents(patient)))}
+          </dd>
+        </div>
+        <div
+          className="mt-8 sm:grid sm:mt-5 sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+          <dt className="text-sm leading-5 font-medium text-gray-500">
+            {str("Number Of Chronic Diseased Dependents")}
+          </dt>
+          <dd
+            className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">
+            {str(
+               string_of_int(
+                 PatientInfo.numberOfChronicDiseasedDependents(patient),
+               ),
+             )}
+          </dd>
+        </div>
+        {switch (PatientInfo.facilityObject(patient)) {
+         | Some(facility) =>
+           <div
+             className="mt-8 sm:grid sm:mt-5 sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+             <dt className="text-sm leading-5 font-medium text-gray-500">
+               {str("Last visited facility")}
+             </dt>
+             <dd
+               className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">
+               {str(Facility.name(facility))}
+             </dd>
+           </div>
+         | None => React.null
+         }}
+        {switch (PatientInfo.willDonateBlood(patient)) {
+         | Some(willDonateBlood) =>
+           <div
+             className="mt-8 sm:grid sm:mt-5 sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+             <dt className="text-sm leading-5 font-medium text-gray-500">
+               {str("Willing to Donate Blood")}
+             </dt>
+             <dd
+               className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">
+               {str(willDonateBlood ? "Yes" : "No")}
+             </dd>
+           </div>
+         | None => React.null
+         }}
+        {switch (PatientInfo.isDeclaredPositive(patient)) {
+         | Some(isDeclaredPositive) =>
+           <div
+             className="mt-8 sm:grid sm:mt-5 sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+             <dt className="text-sm leading-5 font-medium text-gray-500">
+               {str("Has been declared postive")}
+             </dt>
+             <dd
+               className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">
+               {str(isDeclaredPositive ? "Yes" : "No")}
+             </dd>
+           </div>
+         | None => React.null
+         }}
+      </dl>
+      <div
+        className="mt-8 sm:grid sm:mt-5 sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+        <dt className="text-sm leading-5 font-medium text-gray-500">
+          {str("Covid-19 Status")}
+        </dt>
+        <dd
+          className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">
+          {str(PatientInfo.diseaseStatus(patient))}
+        </dd>
       </div>
     </div>
-    {<div className="w-auto md:w-1/4 text-xs flex justify-end mt-2 md:mt-0">
-       <div
-         className="bg-orange-100 border border-yellow-300 flex-shrink-0 leading-normal text-yellow-600 font-semibold px-3 py-px rounded">
-         {str(PatientInfo.diseaseStatus(patient))}
-       </div>
-     </div>}
   </div>;
 };
 
@@ -76,9 +220,26 @@ let make = (~patientInfo, ~token) => {
   );
 
   <div className="max-w-3xl mx-auto h-full">
+    <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mt-2">
+      <div className="flex">
+        <div className="flex-shrink-0">
+          <i className="text-yellow-700 fas fa-check" />
+        </div>
+        <div className="ml-3">
+          <p className="text-sm leading-5 text-yellow-700">
+            {str(
+               "Share your medical records with the hospital by sharing your phone number and date of birth.",
+             )}
+          </p>
+        </div>
+      </div>
+    </div>
     <h1 className="pt-6 text-gray-700 font-semibold text-3xl">
-      {str("Medical Records")}
+      {str(PatientInfo.name(patientInfo))}
     </h1>
+    <div className="font-mono text-xs">
+      {str("Unique Id: " ++ PatientInfo.id(patientInfo))}
+    </div>
     {showPatientCard(patientInfo, send)}
     {switch (state) {
      | Loading =>
