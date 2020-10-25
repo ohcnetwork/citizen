@@ -62,16 +62,18 @@ let make = () => {
                    </div>
                    <div className="mt-5 flex-1 h-0 overflow-y-auto">
                      <nav className="px-2 space-y-1">
-                       <a
+                       <button
                          href="#"
-                         className="group flex items-center px-2 py-2 text-base leading-6 font-medium text-gray-900 rounded-md bg-gray-100 focus:outline-none focus:bg-gray-200 transition ease-in-out duration-150">
-                         // <!-- Heroicon name: home -->
-                          {str("Dashboard")} </a>
-                       <a
+                         onClick={_ => ReasonReactRouter.push("./")}
+                         className="w-full group flex items-center px-2 py-2 text-base leading-6 font-medium text-gray-600 rounded-md hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:text-gray-900 focus:bg-gray-100 transition ease-in-out duration-150">
+                         {str("Dashboard")}
+                       </button>
+                       <button
                          href="#"
-                         className="group flex items-center px-2 py-2 text-base leading-6 font-medium text-gray-600 rounded-md hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:text-gray-900 focus:bg-gray-100 transition ease-in-out duration-150">
+                         onClick={_ => ReasonReactRouter.push("/patients")}
+                         className="w-full group flex items-center px-2 py-2 text-base leading-6 font-medium text-gray-600 rounded-md hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:text-gray-900 focus:bg-gray-100 transition ease-in-out duration-150">
                          {str("Patients")}
-                       </a>
+                       </button>
                      </nav>
                    </div>
                  </div>
@@ -113,10 +115,11 @@ let make = () => {
           </div>
       </div>
       <div className="flex flex-col w-0 flex-1 overflow-hidden">
-        <div className="relative z-10 flex-shrink-0 flex h-16 bg-white shadow">
+        <div
+          className="md:hidden relative z-10 flex-shrink-0 flex h-16 bg-white shadow">
           <button
             onClick={_ => setShowNav(nav => !nav)}
-            className="px-4 border-r border-gray-200 text-gray-500 focus:outline-none focus:bg-gray-100 focus:text-gray-600 md:hidden">
+            className="px-4 text-gray-500 focus:outline-none focus:bg-gray-100 focus:text-gray-600 md:hidden">
             <svg
               className="h-6 w-6"
               stroke="currentColor"
@@ -132,19 +135,10 @@ let make = () => {
           </button>
         </div>
         <main className="flex-1 relative overflow-y-auto focus:outline-none">
-          <div className="pt-2 pb-6 md:py-6">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-              <h1 className="text-2xl font-semibold text-gray-900">
-                {str("Dashboard")}
-              </h1>
-            </div>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-              {switch (url.path) {
-               | ["patients"] => <Patient__Root />
-               | _ => React.null
-               }}
-            </div>
-          </div>
+          {switch (url.path) {
+           | ["patients"] => <Patient__Root />
+           | _ => React.null
+           }}
         </main>
       </div>
     </div>;
