@@ -15,9 +15,16 @@ let acceptOrRejectResponse = response =>
   };
 
 let handleResponseError = error => {
+  Js.log("here");
+  Js.log(error);
   let message = "Our team has been notified of this error. Please reload the page and try again.";
 
-  switch (error |> handleApiError) {
+  switch (error) {
+  | Some(code) when code == 401 =>
+    Notification.notice(
+      code |> string_of_int,
+      "Login Expired please login again",
+    )
   | Some(code) => Notification.error(code |> string_of_int, message)
   | None => Notification.error("An unexpected error occurred", message)
   };

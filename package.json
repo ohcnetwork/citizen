@@ -34,6 +34,7 @@
     "bs-fetch": "^0.6.2",
     "bs-webapi": "^0.19.1",
     "date-fns": "^2.16.1",
+    "date-fns-tz": "^1.0.10",
     "postcss-flexbugs-fixes": "^4.2.1",
     "postcss-import": "^12.0.1",
     "postcss-preset-env": "^6.7.0",
