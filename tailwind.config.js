@@ -1,13 +1,19 @@
+const defaultTheme = require('tailwindcss/defaultTheme')
+
 module.exports = {
-  theme: {},
+  theme: {
+    extend: {
+      fontFamily: {
+        sans: ['Inter var', ...defaultTheme.fontFamily.sans],
+      },
+    },
+  },
   variants: {},
   plugins: [],
   purge: {
     content: ["./src/**/*.html", "./src/**/*.re", "./src/**/*.bs.js"],
   },
+  plugins: [
+    require('@tailwindcss/ui'),
+  ]
 };
-
-// Add the following if you want to whitelist classes
-// options: {
-//   whitelistPatterns: [/^bg-/, /^text-/, /^border-/, /^hover:/],
-// },

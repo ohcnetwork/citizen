@@ -28,12 +28,15 @@
     "node": ">=8"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.15.1",
+    "@tailwindcss/ui": "^0.6.2",
     "postcss-flexbugs-fixes": "^4.2.1",
     "postcss-import": "^12.0.1",
     "postcss-preset-env": "^6.7.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "reason-react": "^0.9.1",
+    "reason-transition-group": "^2.1.1",
     "style-loader": "^0.23.1",
     "tailwindcss": "^1.8.3",
     "url-loader": "^2.1.0"
