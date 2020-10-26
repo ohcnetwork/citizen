@@ -19,7 +19,7 @@ let showPage = (title, description, image, link, externalLink) => {
           />
         </div>
         <div
-          className="landing-page__title-container absolute w-full flex items-center h-16 bottom-0 z-50">
+          className="landing-page__title-container absolute w-full flex items-center h-16 bottom-0 z-30">
           <h4
             className="landing-page__title text-white font-semibold leading-tight pl-6 pr-4 text-lg md:text-xl">
             {str(title)}
