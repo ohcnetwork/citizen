@@ -14,6 +14,24 @@ body {
   @apply w-full h-full antialiased;
 }
 
+@screen md {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: theme(colors.gray.500) theme(colors.gray.100);
+  }
+  ::-webkit-scrollbar {
+    width: 12px;
+  }
+  ::-webkit-scrollbar-track {
+    background: theme(colors.gray.100);
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: theme(colors.gray.500);
+    border-radius: 6px;
+    border: 3px solid theme(colors.gray.100);
+  }
+}
+
 .btn {
   @apply inline-flex items-center justify-center whitespace-no-wrap text-sm font-semibold py-2 px-4 rounded cursor-pointer;
 }
@@ -111,7 +129,7 @@ button:focus {
 }
 
 .btn-primary:hover {
-  @apply bg-green-600;
+  @apply bg-green-600 text-white;
   background-image: linear-gradient(
     135deg,
     rgba(72, 187, 120, 1) 0%,
@@ -209,4 +227,23 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 input[type="number"] {
   -moz-appearance: textfield;
+}
+
+.landing-page__cover {
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+}
+
+.landing-page__title-container {
+  background: rgba(0, 0, 0, 0.3);
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.6));
+}
+
+.landing-page__title {
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+.landing-page__description {
+  min-height: 4.5rem;
 }

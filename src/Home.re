@@ -9,6 +9,7 @@ let actions = url => {
   let current = {
     switch (url) {
     | ["patients"] => "patients"
+    | ["rrt"] => "rrt"
     | _ => ""
     };
   };
@@ -18,7 +19,7 @@ let actions = url => {
       onClick={_ => ReasonReactRouter.push("./")}
       className="w-full group flex items-center px-2 py-2 text-base leading-6 font-medium text-gray-600 rounded-md hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:text-gray-900 focus:bg-gray-100 transition ease-in-out duration-150">
       <i className="fas fa-home mr-2" />
-      {str("Dashboard")}
+      {str("Home")}
     </button>,
     <button
       key="patients"
@@ -27,6 +28,20 @@ let actions = url => {
       <i className="fas fa-book-medical mr-2" />
       {str("Medical Records")}
     </button>,
+    <button
+      key="rrt"
+      onClick={_ => ReasonReactRouter.push("/rrt")}
+      className={buttonClasses(current == "rrt")}>
+      <i className="fas fa-address-book mr-2" />
+      {str("RRT Directory")}
+    </button>,
+    <a
+      key="dashboard"
+      href="dashboard.coronasafe.network"
+      className={buttonClasses(false)}>
+      <i className="fas fa-tachometer-alt mr-2" />
+      {str("Care Dashboard")}
+    </a>,
     {
       Storage.getToken()
       ->Belt.Option.mapWithDefault(React.null, t =>
@@ -159,12 +174,8 @@ let make = () => {
         <main className="flex-1 relative overflow-y-auto focus:outline-none">
           {switch (url.path) {
            | ["patients"] => <Patient__Root />
-           | _ =>
-             <div
-               className="text-sm flex items-start justify-center mx-auto mt-20 font-semibold text-yellow-400">
-               <Faicon classes="fas fa wrench mr-2" />
-               {str("Work in progress, Visit Medical Records")}
-             </div>
+           | ["rrt"] => <RRT />
+           | _ => <Landing />
            }}
         </main>
       </div>
