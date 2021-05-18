@@ -25,7 +25,7 @@ module.exports = {
     port: 4000,
     proxy: {
       "/api": {
-        target: "https://careapi.coronasafe.in/api/v1",
+        target: "https://careapi.coronasafe.in",
         changeOrigin: true,
       },
     },
