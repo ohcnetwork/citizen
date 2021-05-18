@@ -9,19 +9,27 @@ module.exports = {
   mode: isProd ? "production" : "development",
   output: {
     path: outputDir,
-    filename: "Index.js"
+    filename: "Index.js",
   },
   plugins: [
     new HtmlWebpackPlugin({
       template: "src/index.html",
-      inject: false
-    })
+      inject: false,
+    }),
   ],
   devServer: {
+    contentBase: path.join(__dirname, "dist"),
     compress: true,
-    contentBase: outputDir,
-    port: process.env.PORT || 8000,
-    historyApiFallback: true
+    writeToDisk: true,
+    host: "0.0.0.0",
+    port: 4000,
+    proxy: {
+      "/api": {
+        target: "https://careapi.coronasafe.in/api/v1",
+        changeOrigin: true,
+      },
+    },
+    historyApiFallback: true,
   },
   module: {
     rules: [
@@ -30,8 +38,8 @@ module.exports = {
         use: [
           "style-loader",
           { loader: "css-loader", options: { importLoaders: 1 } },
-          "postcss-loader"
-        ]
+          "postcss-loader",
+        ],
       },
       {
         test: /\.(png|jpg|jpeg|gif)$/i,
@@ -39,11 +47,11 @@ module.exports = {
           {
             loader: "url-loader",
             options: {
-              limit: 8192
-            }
-          }
-        ]
-      }
-    ]
-  }
+              limit: 8192,
+            },
+          },
+        ],
+      },
+    ],
+  },
 };
