@@ -28,16 +28,16 @@ let actions = url => {
       <i className="fas fa-book-medical mr-2" />
       {str("Medical Records")}
     </button>,
-    <button
+    <a
       key="rrt"
-      onClick={_ => ReasonReactRouter.push("/rrt")}
-      className={buttonClasses(current == "rrt")}>
-      <i className="fas fa-address-book mr-2" />
+      href="http://rrt.coronasafe.network/"
+      className={buttonClasses(false)}>
+      <i className="fas fa-tachometer-alt mr-2" />
       {str("RRT Directory")}
-    </button>,
+    </a>,
     <a
       key="dashboard"
-      href="dashboard.coronasafe.network"
+      href="https://dashboard.coronasafe.network"
       className={buttonClasses(false)}>
       <i className="fas fa-tachometer-alt mr-2" />
       {str("Care Dashboard")}
@@ -53,7 +53,7 @@ let actions = url => {
             }}
             className={buttonClasses(false)}>
             <i className="fas fa-sign-out-alt mr-2" />
-            {str("Clear Token")}
+            {str("Log Out")}
           </button>
         );
     },
@@ -109,7 +109,7 @@ let make = () => {
                        <img
                          className="h-16 w-auto mr-2"
                          src=logo
-                         alt="Ayushma"
+                         alt="Citizen"
                        />
                      </div>
                      <button
@@ -138,7 +138,7 @@ let make = () => {
             <div
               className="flex flex-col flex-grow border-r border-gray-200 pt-5 pb-4 bg-white overflow-y-auto">
               <div className="flex items-end flex-shrink-0 px-4 mx-auto">
-                <img className="h-16 w-auto mr-2" src=logo alt="Ayushma" />
+                <img className="h-16 w-auto mr-2" src=logo alt="Citizen" />
               </div>
               <div className="mt-5 flex-grow flex flex-col">
                 <nav className="flex-1 px-4 bg-white space-y-1">
@@ -152,7 +152,7 @@ let make = () => {
         <div
           className="md:hidden relative z-10 flex-shrink-0 flex h-16 bg-white shadow justify-between">
           <div className="flex-shrink-0 flex p-2">
-            <img className="h-12 w-auto mr-2" src=logo alt="Ayushma" />
+            <img className="h-12 w-auto mr-2" src=logo alt="Citizen" />
           </div>
           <button
             onClick={_ => setShowNav(nav => !nav)}
