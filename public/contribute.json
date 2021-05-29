@@ -1,0 +1,28 @@
+{
+  "name": "citizen",
+  "description": "citizen is a citizen access portal for the  unified Corona Safe Network",
+  "repository": {
+    "url": "https://github.com/coronasafe/citizen",
+    "license": "MIT"
+  },
+  "participate": {
+    "home": "https://volunteer.coronasafe.network",
+    "docs": "https://knowledge.coronasafe.network"
+  },
+  "bugs": {
+    "list": "https://github.com/coronasafe/citizen/issues",
+    "report": "https://github.com/coronasafe/citizen/issues/new/choose"
+  },
+  "urls": {
+    "prod": "https://citizen.coronasafe.network",
+    "stage": "https://ayushma.coronasafe.in"
+  },
+  "keywords": [
+    "javascript",
+    "typescript",
+    "reason-react",
+    "React",
+    "Docker",
+    "reason-react"
+  ]
+}
