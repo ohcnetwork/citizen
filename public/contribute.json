@@ -1,8 +1,8 @@
 {
-  "name": "Care",
-  "description": "Care is a single point to link Hospitals,Corona Care Centers and Volunteers to the unified Corona Safe Network",
+  "name": "citizen",
+  "description": "citizen is a citizen access portal for the  unified Corona Safe Network",
   "repository": {
-    "url": "https://github.com/coronasafe/care_fe",
+    "url": "https://github.com/coronasafe/citizen",
     "license": "MIT"
   },
   "participate": {
@@ -10,18 +10,19 @@
     "docs": "https://knowledge.coronasafe.network"
   },
   "bugs": {
-    "list": "https://github.com/coronasafe/care_fe/issues",
-    "report": "https://github.com/coronasafe/care_fe/issues/new/choose"
+    "list": "https://github.com/coronasafe/citizen/issues",
+    "report": "https://github.com/coronasafe/citizen/issues/new/choose"
   },
   "urls": {
-    "prod": "https://care.coronasafe.network",
-    "stage": "https://care.coronasafe.in"
+    "prod": "https://citizen.coronasafe.network",
+    "stage": "https://ayushma.coronasafe.in"
   },
   "keywords": [
     "javascript",
     "typescript",
     "reason-react",
     "React",
-    "Docker"
+    "Docker",
+    "reason-react"
   ]
 }
