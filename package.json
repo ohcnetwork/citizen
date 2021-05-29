@@ -30,9 +30,13 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.1",
     "@glennsl/bs-json": "^5.0.2",
+    "@pnotify/animate": "^5.1.2",
+    "@pnotify/core": "^5.1.2",
+    "@pnotify/mobile": "^5.1.2",
     "@tailwindcss/ui": "^0.6.2",
     "bs-fetch": "^0.6.2",
     "bs-webapi": "^0.19.1",
+    "cross-env": "^7.0.3",
     "date-fns": "^2.16.1",
     "date-fns-tz": "^1.0.10",
     "postcss-flexbugs-fixes": "^4.2.1",
@@ -44,10 +48,7 @@
     "reason-transition-group": "^2.1.1",
     "style-loader": "^0.23.1",
     "tailwindcss": "^1.8.3",
-    "url-loader": "^2.1.0",
-    "@pnotify/animate": "^5.1.2",
-    "@pnotify/core": "^5.1.2",
-    "@pnotify/mobile": "^5.1.2"
+    "url-loader": "^2.1.0"
   },
   "devDependencies": {
     "bs-platform": "^7.3.2",
