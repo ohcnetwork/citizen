@@ -1,8 +1,9 @@
 exception UnexpectedResponse(int)
 
-let handleApiError = x =>
+let apiErrorTitle = x =>
   switch x {
-  | UnexpectedResponse(code) => code
+  | UnexpectedResponse(code) => string_of_int(code)
+  | _ => "An unexpected error occurred"
   }
 
 let acceptOrRejectResponse = response =>
@@ -13,20 +14,15 @@ let acceptOrRejectResponse = response =>
   }
 
 let handleResponseError = error => {
-  Js.log("here")
-  Js.log(error)
-  let message = "Our team has been notified of this error. Please reload the page and try again."
+  let title = PromiseUtils.errorToExn(error)->apiErrorTitle
 
-  switch error {
-  | Some(code) if code == 401 =>
-    Storage.deleteToken()
-    Notification.notice(code |> string_of_int, "Login Expired please login again")
-  | Some(code) => Notification.error(code |> string_of_int, message)
-  | None => Notification.error("An unexpected error occurred", message)
-  }
+  Notification.error(
+    title,
+    "Our team has been notified of this error. Please reload the page and try again.",
+  )
 }
 
-let handleResponseJSON = (json, responseCB, errorCB) => {
+let handleResponseJSON = (json, responseCB, errorCB, notify) => {
   let error = json |> {
     open Json.Decode
     optional(field("error", string))
@@ -34,21 +30,21 @@ let handleResponseJSON = (json, responseCB, errorCB) => {
 
   switch error {
   | Some(error) =>
-    Notification.error("Something went wrong!", error)
+    notify ? Notification.error("Something went wrong!", error) : ()
     errorCB()
   | None => responseCB(json)
   }
 }
 
-let handleResponse = (responseCB, errorCB, promise) => {
+let handleResponse = (~responseCB, ~errorCB, ~notify=true, promise) => {
   open Js.Promise
   promise
   |> then_(response => acceptOrRejectResponse(response))
-  |> then_(json => handleResponseJSON(json, responseCB, errorCB) |> resolve)
+  |> then_(json => handleResponseJSON(json, responseCB, errorCB, notify) |> resolve)
   |> catch(error => {
     errorCB()
     Js.log(error)
-    handleResponseError(error |> handleApiError) |> resolve
+    resolve(notify ? handleResponseError(error) : ())
   })
   |> ignore
 }
@@ -63,7 +59,7 @@ let sendPayload = (url, payload, responseCB, errorCB, method_) =>
       ~credentials=Fetch.SameOrigin,
       (),
     ),
-  ) |> handleResponse(responseCB, errorCB)
+  ) |> handleResponse(~responseCB, ~errorCB)
 
 let sendFormData = (url, formData, responseCB, errorCB) =>
   Fetch.fetchWithInit(
@@ -74,15 +70,15 @@ let sendFormData = (url, formData, responseCB, errorCB) =>
       ~credentials=Fetch.SameOrigin,
       (),
     ),
-  ) |> handleResponse(responseCB, errorCB)
+  ) |> handleResponse(~responseCB, ~errorCB)
+
+let get = (url, responseCB, errorCB) => Fetch.fetch(url) |> handleResponse(~responseCB, ~errorCB)
 
 let create = (url, payload, responseCB, errorCB) =>
   sendPayload(url, payload, responseCB, errorCB, Post)
 
 let update = (url, payload, responseCB, errorCB) =>
   sendPayload(url, payload, responseCB, errorCB, Patch)
-
-let get = (url, responseCB, errorCB) => Fetch.fetch(url) |> handleResponse(responseCB, errorCB)
 
 let getWithToken = (url, token, responseCB, errorCB) =>
   Fetch.fetchWithInit(
@@ -93,4 +89,21 @@ let getWithToken = (url, token, responseCB, errorCB) =>
       ~credentials=Fetch.SameOrigin,
       (),
     ),
-  ) |> handleResponse(responseCB, errorCB)
+  ) |> handleResponse(~responseCB, ~errorCB)
+
+// let handleResponseError = error => {
+//   Js.log(error)
+//   let message = "Our team has been notified of this error. Please reload the page and try again."
+
+//   switch error {
+//   | Some(code) =>
+//     if code == 401 {
+//       Storage.deleteToken()
+//       Notification.notice(code |> string_of_int, "Login Expired please login again")
+//     } else {
+//       Notification.error(code |> string_of_int, message)
+//     }
+
+//   | None => Notification.error("An unexpected error occurred", message)
+//   }
+// }
