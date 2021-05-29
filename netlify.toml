@@ -4,6 +4,12 @@
   command = "npm i && npm run clean && npm run build && npm run webpack:production"
 
 [[redirects]]
+from = "/api/*"
+to = "https://careapi.coronasafe.in/api/:splat"
+status = 200
+force = true
+
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
