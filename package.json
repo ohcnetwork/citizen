@@ -8,7 +8,7 @@
     "clean": "bsb -clean-world",
     "test": "echo \"Error: no test specified\" && exit 1",
     "webpack": "webpack -w",
-    "webpack:production": "NODE_ENV=production webpack",
+    "webpack:production": "cross-env NODE_ENV=production webpack",
     "server": "webpack-dev-server",
     "re:build": "bsb -make-world -clean-world",
     "re:watch": "bsb -make-world -clean-world -w"
@@ -22,7 +22,7 @@
     "type": "git",
     "url": "git://github.com/bodhish/create-reason-react-tailwind.git"
   },
-  "author": "bodhsih",
+  "author": "bodhish",
   "license": "MIT",
   "engines": {
     "node": ">=8"
