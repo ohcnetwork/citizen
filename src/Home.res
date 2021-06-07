@@ -122,7 +122,7 @@ let make = () => {
           </svg>
         </button>
       </div>
-      <main className="flex-1 relative overflow-y-auto focus:outline-none">
+      <main className="flex-1 relative overflow-y-auto focus:outline-none bg-white">
         {switch url.path {
         | list{"patients"} => <Patient__Root />
         | list{"rrt"} => <RRT />
