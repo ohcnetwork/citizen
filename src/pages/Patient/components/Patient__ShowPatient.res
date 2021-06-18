@@ -7,7 +7,6 @@ type state =
 let handleErrorCB = () => Js.log("Error")
 
 let handleSucessCB = (send, response) => {
-  Js.log(response)
   let patients = response |> {
     open Json.Decode
     field("last_consultation", Consultation.decode)
@@ -16,7 +15,7 @@ let handleSucessCB = (send, response) => {
 }
 
 let getPatientDetails = (id, send, token) => {
-  send(state => Loading)
+  send(_state => Loading)
   Api.getWithToken(
     Routes.url("otp/patient/" ++ (id ++ "/")),
     token,
@@ -53,7 +52,7 @@ let showConsultationCard = consultation => {
       {switch Consultation.admission_date(consultation) {
       | Some(date) =>
         <p className="max-w-2xl text-sm leading-5 text-gray-500">
-          {str(`admission date: ${Js.Date.toDateString(date)}`)}
+          {str("admission date:" ++ Js.Date.toDateString(date))}
         </p>
       | None => React.null
       }}
@@ -140,13 +139,15 @@ let showConsultationCard = consultation => {
         <div
           className="mt-8 sm:grid sm:mt-5 sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
           <dt className="text-sm leading-5 font-medium text-gray-500"> {str("Symptoms")} </dt>
-          <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-            {str(
-              Consultation.symptoms(consultation) |> Js.Array.reduce(
-                (acc, symptom) => acc ++ symptomToString(symptom) ++ " ",
-                "",
-              ),
-            )}
+          <dd
+            className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2 space-y-2 space-x-2">
+            {Js.Array.map(
+              symptom =>
+                <span className="px-2 bg-orange-100 rounded text-xs py-1">
+                  {str(symptomToString(symptom))}
+                </span>,
+              Consultation.symptoms(consultation),
+            )->React.array}
           </dd>
         </div>
       </dl>
@@ -154,8 +155,7 @@ let showConsultationCard = consultation => {
   </div>
 }
 
-let showPatientCard = (patient, send) => {
-  Js.log(patient)
+let showPatientCard = (patient, _send) => {
   <div key={PatientInfo.id(patient)} className="rounded-lg shadow px-4 py-2 mt-4">
     <div>
       <h3 className="text-lg leading-6 font-medium text-gray-900"> {str("General")} </h3>

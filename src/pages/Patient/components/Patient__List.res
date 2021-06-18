@@ -81,7 +81,7 @@ let make = (~token) => {
     {switch state.ui {
     | Loading => SkeletonLoading.multiple(~count=3, ~element=SkeletonLoading.card())
     | Loaded =>
-      state.patients |> Array.mapi((i, patient) => showPatientCard(patient, send)) |> React.array
+      state.patients |> Js.Array.map(patient => showPatientCard(patient, send)) |> React.array
     | ShowPatient(patientInfo) => <Patient__ShowPatient token patientInfo />
     }}
   </div>

@@ -30,7 +30,7 @@ let actions = url => {
     <a key="dashboard" href="https://dashboard.coronasafe.network" className={buttonClasses(false)}>
       <i className="fas fa-tachometer-alt mr-2" /> {str("Care Dashboard")}
     </a>,
-    Storage.getToken()->Belt.Option.mapWithDefault(React.null, t =>
+    Storage.getToken()->Belt.Option.mapWithDefault(React.null, _t =>
       <button
         key="logout"
         onClick={_ => {

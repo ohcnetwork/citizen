@@ -24,7 +24,7 @@ type t = {
   suggestion: string,
   suggestion_text: string,
   symptoms: Js.Array.t<int>,
-  symptoms_onset_date: Js.Date.t,
+  symptoms_onset_date: option<Js.Date.t>,
   verified_by: option<string>,
 }
 
@@ -84,7 +84,7 @@ let decode = json => {
     suggestion: json |> field("suggestion", string),
     suggestion_text: json |> field("suggestion_text", string),
     symptoms: json |> field("symptoms", array(int)),
-    symptoms_onset_date: json |> field("symptoms_onset_date", DateFns.decodeISO),
+    symptoms_onset_date: json |> field("symptoms_onset_date", optional(DateFns.decodeISO)),
     verified_by: json |> field("verified_by", optional(string)),
   }
 }
