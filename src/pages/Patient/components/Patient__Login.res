@@ -40,7 +40,7 @@ let handleErrorCB = (send, _error) => send(ClearSaving)
 
 let handleGetOtpSuccess = (send, _response) => send(OtpSend)
 
-let handleVerifyOtpSuccess = (send, updateTokenCB, response) => {
+let handleVerifyOtpSuccess = (_send, updateTokenCB, response) => {
   let token = response |> {
     open Json.Decode
     field("access", string)
