@@ -2,15 +2,18 @@ let str = React.string
 
 type state =
   | Loading
-  | Loaded(string)
+  | Loaded(Consultation.t)
 
 let handleErrorCB = () => Js.log("Error")
 
-let handleSucessCB = (send, response) =>
-  // let patients =
-  //   response
-  //   |> Json.Decode.(field("results", Json.Decode.array(PatientInfo.decode)));
-  send(_ => Loaded("WIP: Add consultation details"))
+let handleSucessCB = (send, response) => {
+  Js.log(response)
+  let patients = response |> {
+    open Json.Decode
+    field("last_consultation", Consultation.decode)
+  }
+  send(_ => Loaded(patients))
+}
 
 let getPatientDetails = (id, send, token) => {
   send(state => Loading)
@@ -20,6 +23,135 @@ let getPatientDetails = (id, send, token) => {
     handleSucessCB(send),
     handleErrorCB,
   )
+}
+
+let symptomToString = symptom => {
+  switch symptom {
+  | 1 => "ASYMPTOMATIC"
+  | 2 => "FEVER"
+  | 3 => "SORE THROAT"
+  | 4 => "COUGH"
+  | 5 => "BREATHLESSNESS"
+  | 6 => "MYALGIA"
+  | 7 => "ABDOMINAL DISCOMFORT"
+  | 8 => "VOMITING/DIARRHOEA"
+  | 10 => "SARI"
+  | 11 => "SPUTUM"
+  | 12 => "NAUSEA"
+  | 13 => "CHEST PAIN"
+  | 14 => "HEMOPTYSIS"
+  | 15 => "NASAL DISCHARGE"
+  | 16 => "BODY ACHE"
+  | _ => "OTHERS"
+  }
+}
+
+let showConsultationCard = consultation => {
+  <div className="rounded-lg shadow px-4 py-2 my-4">
+    <div>
+      <h3 className="text-lg leading-6 font-medium text-gray-900"> {str("Last Consultation")} </h3>
+      {switch Consultation.admission_date(consultation) {
+      | Some(date) =>
+        <p className="max-w-2xl text-sm leading-5 text-gray-500">
+          {str(`admission date: ${Js.Date.toDateString(date)}`)}
+        </p>
+      | None => React.null
+      }}
+    </div>
+    <div className="mt-5 border-t border-gray-200 pt-4">
+      <dl>
+        <div className="sm:grid sm:grid-cols-3 sm:gap-4">
+          <dt className="text-sm leading-5 font-medium text-gray-500"> {str("Facility Name:")} </dt>
+          <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+            {str(Consultation.facility_name(consultation))}
+          </dd>
+        </div>
+        <div
+          className="mt-8 sm:grid sm:mt-5 sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+          <dt className="text-sm leading-5 font-medium text-gray-500"> {str("Admitted")} </dt>
+          <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+            {switch Consultation.admitted(consultation) {
+            | true => str("Yes")
+            | false => str("No")
+            }}
+          </dd>
+        </div>
+        {switch Consultation.discharge_date(consultation) {
+        | Some(discharge) =>
+          <div
+            className="mt-8 sm:grid sm:mt-5 sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+            <dt className="text-sm leading-5 font-medium text-gray-500">
+              {str("Discharge Date")}
+            </dt>
+            <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+              {str(Js.Date.toDateString(discharge))}
+            </dd>
+          </div>
+        | None => React.null
+        }}
+        {switch Consultation.consultation_notes(consultation) {
+        | Some(notes) =>
+          <div
+            className="mt-8 sm:grid sm:mt-5 sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+            <dt className="text-sm leading-5 font-medium text-gray-500">
+              {str("Consultation Notes")}
+            </dt>
+            <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+              {str(notes)}
+            </dd>
+          </div>
+        | None => React.null
+        }}
+        {switch Consultation.category(consultation) {
+        | Some(category) =>
+          <div
+            className="mt-8 sm:grid sm:mt-5 sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+            <dt className="text-sm leading-5 font-medium text-gray-500"> {str("Category")} </dt>
+            <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+              {str(category)}
+            </dd>
+          </div>
+        | None => React.null
+        }}
+        {switch Consultation.bed_number(consultation) {
+        | Some(bed) =>
+          <div
+            className="mt-8 sm:grid sm:mt-5 sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+            <dt className="text-sm leading-5 font-medium text-gray-500"> {str("Bed Number")} </dt>
+            <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+              {str(bed)}
+            </dd>
+          </div>
+        | None => React.null
+        }}
+        {switch Consultation.examination_details(consultation) {
+        | Some(examination) =>
+          <div
+            className="mt-8 sm:grid sm:mt-5 sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+            <dt className="text-sm leading-5 font-medium text-gray-500">
+              {str("Examination Details")}
+            </dt>
+            <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+              {str(examination)}
+            </dd>
+          </div>
+        | None => React.null
+        }}
+        <div
+          className="mt-8 sm:grid sm:mt-5 sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+          <dt className="text-sm leading-5 font-medium text-gray-500"> {str("Symptoms")} </dt>
+          <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+            {str(
+              Consultation.symptoms(consultation) |> Js.Array.reduce(
+                (acc, symptom) => acc ++ symptomToString(symptom) ++ " ",
+                "",
+              ),
+            )}
+          </dd>
+        </div>
+      </dl>
+    </div>
+  </div>
 }
 
 let showPatientCard = (patient, send) => {
@@ -198,7 +330,7 @@ let make = (~patientInfo, ~token) => {
     {showPatientCard(patientInfo, send)}
     {switch state {
     | Loading => SkeletonLoading.multiple(~count=3, ~element=SkeletonLoading.card())
-    | Loaded(patientDetails) => <div> {str(patientDetails)} </div>
+    | Loaded(consultation) => <div> {showConsultationCard(consultation)} </div>
     }}
   </div>
 }
