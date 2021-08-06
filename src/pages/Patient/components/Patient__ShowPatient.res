@@ -136,7 +136,7 @@ let showConsultationCard = consultation => {
             <div
               className="p-4 lg:flex">
               <div className="leading-5 font-semibold text-gray-500 mr-3"> {str("Consultation Notes:")} </div>
-              <div className="font-semibold text-sm leading-5 text-gray-900">
+              <div className="font-semibold text-sm leading-5 text-gray-900 sm:mt-2 lg:mt-0">
                 {str(notes)}
               </div>
             </div>
@@ -157,7 +157,7 @@ let showConsultationCard = consultation => {
             <div
               className="p-4 lg:flex">
               <div className="leading-5 font-semibold text-gray-500 mr-3"> {str("Examination Details:")} </div>
-              <div className="font-semibold text-sm leading-5 text-gray-900">
+              <div className="font-semibold text-sm leading-5 text-gray-900 sm:mt-2 lg:mt-0">
                 {str(examination)}
               </div>
             </div>
