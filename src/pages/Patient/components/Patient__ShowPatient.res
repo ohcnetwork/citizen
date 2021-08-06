@@ -4,6 +4,26 @@ type state =
   | Loading
   | Loaded(Consultation.t)
 
+type covidStatus =
+  | POSITIVE
+  | SUSPECTED
+
+let getStatusType = (status: string) => {
+  switch status {
+  | "POSITIVE" => POSITIVE
+  | "SUSPECTED" => SUSPECTED
+  |_ => SUSPECTED
+  }
+}
+
+let statusLabel = (status: covidStatus) => {
+  switch status {
+  | POSITIVE => "w-max-content text-xs bg-red-100 border border-red-300 flex-shrink leading-normal text-red-600 font-semibold px-3 py-px rounded"
+  | SUSPECTED => "w-max-content text-xs bg-yellow-100 border border-yellow-300 flex-shrink leading-normal text-yellow-400 font-semibold px-3 py-px rounded"
+  | _ => "w-max-content text-xs bg-yellow-100 border border-yellow-300 flex-shrink leading-normal text-yellow-400 font-semibold px-3 py-px rounded"
+  }
+}
+
 let handleErrorCB = () => Js.log("Error")
 
 let handleSucessCB = (send, response) => {
@@ -13,6 +33,8 @@ let handleSucessCB = (send, response) => {
   }
   send(_ => Loaded(patients))
 }
+
+
 
 let getPatientDetails = (id, send, token) => {
   send(_state => Loading)
@@ -46,89 +68,48 @@ let symptomToString = symptom => {
 }
 
 let showConsultationCard = consultation => {
-  <div className="rounded-lg shadow px-4 py-2 my-4">
-    <div>
-      <h3 className="text-lg leading-6 font-medium text-gray-900"> {str("Last Consultation")} </h3>
-      {switch Consultation.admission_date(consultation) {
-      | Some(date) =>
-        <p className="max-w-2xl text-sm leading-5 text-gray-500">
-          {str("admission date:" ++ Js.Date.toDateString(date))}
-        </p>
-      | None => React.null
-      }}
+  <div className="rounded-lg px-4 pt-2 mt-4">
+    <div className="grid grid-cols-2 gap-x-5 text-sm">
+      <div className="bg-white p-4">
+        {switch Consultation.admitted(consultation) {
+          | true => <div className="font-bold">{str("ADMITTED")}</div>
+          | false => <div><text className="font-bold">{str("NOT ")}</text>{str("Admitted")}</div>
+        }}
+      </div>
+      <div className="bg-white p-4">{str("Oxygen Saturation")}</div>
     </div>
-    <div className="mt-5 border-t border-gray-200 pt-4">
-      <dl>
-        <div className="sm:grid sm:grid-cols-3 sm:gap-4">
-          <dt className="text-sm leading-5 font-medium text-gray-500"> {str("Facility Name:")} </dt>
-          <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-            {str(Consultation.facility_name(consultation))}
-          </dd>
-        </div>
-        <div
-          className="mt-8 sm:grid sm:mt-5 sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
-          <dt className="text-sm leading-5 font-medium text-gray-500"> {str("Admitted")} </dt>
-          <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-            {switch Consultation.admitted(consultation) {
-            | true => str("Yes")
-            | false => str("No")
-            }}
-          </dd>
-        </div>
-        {switch Consultation.discharge_date(consultation) {
-        | Some(discharge) =>
+    {switch Consultation.category(consultation) {
+        | Some(category) =>
           <div
-            className="mt-8 sm:grid sm:mt-5 sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
-            <dt className="text-sm leading-5 font-medium text-gray-500">
-              {str("Discharge Date")}
-            </dt>
-            <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-              {str(Js.Date.toDateString(discharge))}
+            className="bg-white p-4 mt-8 sm:grid sm:mt-5 sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+            <dt className="leading-5 font-semibold text-gray-500"> {str("Category:")} </dt>
+            <dd className="mt-1 font-semibold text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+              {str(category)}
             </dd>
           </div>
         | None => React.null
-        }}
-        {switch Consultation.consultation_notes(consultation) {
+      }}
+
+      {switch Consultation.consultation_notes(consultation) {
         | Some(notes) =>
           <div
-            className="mt-8 sm:grid sm:mt-5 sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
-            <dt className="text-sm leading-5 font-medium text-gray-500">
-              {str("Consultation Notes")}
+            className="bg-white p-4 mt-8 sm:grid sm:mt-5 sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+            <dt className="leading-5 font-semibold text-gray-500">
+              {str("Consultation Notes:")}
             </dt>
             <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
               {str(notes)}
             </dd>
           </div>
         | None => React.null
-        }}
-        {switch Consultation.category(consultation) {
-        | Some(category) =>
-          <div
-            className="mt-8 sm:grid sm:mt-5 sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
-            <dt className="text-sm leading-5 font-medium text-gray-500"> {str("Category")} </dt>
-            <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-              {str(category)}
-            </dd>
-          </div>
-        | None => React.null
-        }}
-        {switch Consultation.bed_number(consultation) {
-        | Some(bed) =>
-          <div
-            className="mt-8 sm:grid sm:mt-5 sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
-            <dt className="text-sm leading-5 font-medium text-gray-500"> {str("Bed Number")} </dt>
-            <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-              {str(bed)}
-            </dd>
-          </div>
-        | None => React.null
-        }}
-        {switch Consultation.examination_details(consultation) {
+      }}
+
+      {switch Consultation.examination_details(consultation) {
         | Some(examination) =>
           <div
-            className="mt-8 sm:grid sm:mt-5 sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
-            <dt className="text-sm leading-5 font-medium text-gray-500">
-              {str("Examination Details")}
+            className="bg-white p-4 mt-8 sm:grid sm:mt-5 sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+            <dt className="leading-5 font-semibold text-gray-500">
+              {str("Examination Details:")}
             </dt>
             <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
               {str(examination)}
@@ -136,87 +117,159 @@ let showConsultationCard = consultation => {
           </div>
         | None => React.null
         }}
-        <div
-          className="mt-8 sm:grid sm:mt-5 sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
-          <dt className="text-sm leading-5 font-medium text-gray-500"> {str("Symptoms")} </dt>
-          <dd
-            className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2 space-y-2 space-x-2">
-            {Js.Array.map(
-              symptom =>
-                <span className="px-2 bg-orange-100 rounded text-xs py-1">
-                  {str(symptomToString(symptom))}
-                </span>,
-              Consultation.symptoms(consultation),
-            )->React.array}
-          </dd>
+
+      <div className="bg-white mt-4 p-4 pb-0">
+        <div className="font-bold text-lg my-3">{str("Patient Details")}</div>
+          <div className="grid grid-cols-1 text-sm mt-4">
+
+            {switch Consultation.admission_date(consultation) {
+            | Some(date) =>
+              <div className="grid grid-cols-2 gap-x-2 pt-3 border-b-2 border-gray-200">
+                <div>{str("Admission Date")}</div>
+                <div className="max-w-2xl text-sm leading-5 text-gray-500">
+                  {str("admission date:" ++ Js.Date.toDateString(date))}
+                </div>
+              </div>
+            | None => React.null
+            }}
+
+
+            <div className="grid grid-cols-2 gap-x-2 mt-3 mb-2 pt-3 pb-2 border-b-2 border-gray-200">
+              <div className="text-sm leading-5 font-medium text-gray-500">{str("Facility Name:")} </div>
+              <div className="text-sm leading-5 text-gray-900">
+                {str(Consultation.facility_name(consultation))}
+              </div>
+            </div>
+
+            {switch Consultation.discharge_date(consultation) {
+              | Some(discharge) =>
+                  <div className="grid grid-cols-2 gap-x-2 mt-3 mb-2 pt-3 pb-2 border-b-2 border-gray-200">
+                    <div
+                      className="sm:grid sm:mt-5 sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+                      {str("Discharge Date")}
+                    </div>
+                    <div className="text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+                      {str(Js.Date.toDateString(discharge))}
+                    </div>
+                  </div>
+              | None => React.null
+            }}
+
+            {switch Consultation.bed_number(consultation) {
+            | Some(bed) =>
+                <div className="grid grid-cols-2 gap-x-2 mt-3 mb-2 pt-3 pb-2 border-b-2 border-gray-200">
+                  <div className="text-sm leading-5 font-medium text-gray-500"> {str("Bed Number")} </div>
+                  <div className="text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+                    {str(bed)}
+                  </div>
+                </div>
+            | None => React.null
+            }}
+
+            <div className="grid grid-cols-2 gap-x-2 mt-3 mb-2 pt-3 pb-2 border-b-2 border-gray-200">
+              <div className="text-sm leading-5 font-medium text-gray-500"> {str("Symptoms")} </div>
+              <div
+                className="text-sm leading-5 text-gray-900">
+                <div className="sm:mt-0 sm:col-span-2 space-y-2 space-x-2">
+                  {Js.Array.map(
+                    symptom =>
+                      <span className="px-2 bg-orange-100 rounded text-xs py-1">
+                        {str(symptomToString(symptom))}
+                      </span>,
+                    Consultation.symptoms(consultation),
+                  )->React.array}
+                </div>
+              </div>
+            </div>
+          </div>
+      </div>
+    </div>
+}
+
+let showCovidStatus = (patient) => {
+  <div key={PatientInfo.id(patient)} className="rounded-lg shadow px-4 py-2 mt-4">
+    <div
+      className="bg-white sm:grid sm:mt-5 sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5 p-4">
+      <dt className="text-sm leading-5 font-medium text-gray-500"> {str("Covid-19 Status")} </dt>
+      <dd
+        >
+        <div className={statusLabel(getStatusType(PatientInfo.diseaseStatus(patient)))}>
+          {str(PatientInfo.diseaseStatus(patient))}
         </div>
-      </dl>
+      </dd>
     </div>
   </div>
 }
 
 let showPatientCard = (patient, _send) => {
-  <div key={PatientInfo.id(patient)} className="rounded-lg shadow px-4 py-2 mt-4">
-    <div>
-      <h3 className="text-lg leading-6 font-medium text-gray-900"> {str("General")} </h3>
-      <p className="max-w-2xl text-sm leading-5 text-gray-500"> {str("Demographic data")} </p>
-    </div>
-    <div className="mt-5 border-t border-gray-200 pt-4">
-      <dl>
-        <div className="sm:grid sm:grid-cols-3 sm:gap-4">
-          <dt className="text-sm leading-5 font-medium text-gray-500"> {str("Date of Birth")} </dt>
-          <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+  <div className="bg-gray-100 p-4 pt-0">
+    <div className="bg-white grid grid-cols-1 text-sm p-4 pt-0">
+      <div className="grid grid-cols-2 gap-x-2 mt-3 mb-2 pt-3 pb-2 border-b-2 border-gray-200">
+        <div className="text-sm leading-5 font-medium text-gray-500"> {str("Date of Birth")} </div>
+        <div className="text-sm leading-5 text-gray-900">
+          <div className="sm:mt-0 sm:col-span-2">
             {str(PatientInfo.dateOfBirth(patient))}
-          </dd>
+          </div>
         </div>
-        <div
-          className="mt-8 sm:grid sm:mt-5 sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
-          <dt className="text-sm leading-5 font-medium text-gray-500"> {str("Mobile Number")} </dt>
-          <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+      </div>
+
+      <div className="grid grid-cols-2 gap-x-2 mt-3 mb-2 pt-3 pb-2 border-b-2 border-gray-200">
+        <div className="text-sm leading-5 font-medium text-gray-500"> {str("Mobile Number")} </div>
+        <div className="text-sm leading-5 text-gray-900">
+          <div className="sm:mt-0 sm:col-span-2">
             {str(PatientInfo.phoneNumber(patient))}
-          </dd>
+          </div>
         </div>
-        <div
-          className="mt-8 sm:grid sm:mt-5 sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
-          <dt className="text-sm leading-5 font-medium text-gray-500"> {str("Blood Group")} </dt>
-          <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+      </div>
+
+
+      <div className="grid grid-cols-2 gap-x-2 mt-3 mb-2 pt-3 pb-2 border-b-2 border-gray-200">
+        <div className="text-sm leading-5 font-medium text-gray-500"> {str("Blood Group")} </div>
+        <div className="text-sm leading-5 text-gray-900">
+          <div className="sm:mt-0 sm:col-span-2">
             {str(PatientInfo.bloodGroup(patient)->Belt.Option.getWithDefault("-"))}
-          </dd>
+          </div>
         </div>
-        <div
-          className="mt-8 sm:grid sm:mt-5 sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
-          <dt className="text-sm leading-5 font-medium text-gray-500">
-            {str("Emergency Contact number")}
-          </dt>
-          <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+      </div>
+
+      <div className="grid grid-cols-2 gap-x-2 mt-3 mb-2 pt-3 pb-2 border-b-2 border-gray-200">
+        <div className="text-sm leading-5 font-medium text-gray-500"> {str("Emergency Contact number")} </div>
+        <div className="text-sm leading-5 text-gray-900">
+          <div className="sm:mt-0 sm:col-span-2">
             {str(PatientInfo.emergencyPhoneNumber(patient))}
-          </dd>
+          </div>
         </div>
-        <div
-          className="mt-8 sm:grid sm:mt-5 sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
-          <dt className="text-sm leading-5 font-medium text-gray-500"> {str("Address")} </dt>
-          <dd
-            className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">
-            {str(PatientInfo.address(patient))}
-            {PatientInfo.pincode(patient)->Belt.Option.mapWithDefault(React.null, p =>
-              <div> {str("Pincode: " ++ string_of_int(p))} </div>
-            )}
-            {PatientInfo.districtObject(patient)->Belt.Option.mapWithDefault(React.null, p =>
-              <div> {str("District: " ++ District.name(p))} </div>
-            )}
-            {PatientInfo.localBodyObject(patient)->Belt.Option.mapWithDefault(React.null, p =>
-              <div> {str("District: " ++ LocalBody.name(p))} </div>
-            )}
-            {PatientInfo.wardObject(patient)->Belt.Option.mapWithDefault(React.null, p =>
-              <div> {str("District: " ++ Ward.name(p))} </div>
-            )}
-          </dd>
+      </div>
+
+
+      <div className="grid grid-cols-2 gap-x-2 mt-3 mb-2 pt-3 pb-2 border-b-2 border-gray-200">
+        <div className="text-sm leading-5 font-medium text-gray-500"> {str("Address")} </div>
+        <div className="text-sm leading-5 text-gray-900">
+          <div className="sm:mt-0 sm:col-span-2">
+            <div
+              className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">
+              {str(PatientInfo.address(patient))}
+              {PatientInfo.pincode(patient)->Belt.Option.mapWithDefault(React.null, p =>
+                <div> {str("Pincode: " ++ string_of_int(p))} </div>
+              )}
+              {PatientInfo.districtObject(patient)->Belt.Option.mapWithDefault(React.null, p =>
+                <div> {str("District: " ++ District.name(p))} </div>
+              )}
+              {PatientInfo.localBodyObject(patient)->Belt.Option.mapWithDefault(React.null, p =>
+                <div> {str("District: " ++ LocalBody.name(p))} </div>
+              )}
+              {PatientInfo.wardObject(patient)->Belt.Option.mapWithDefault(React.null, p =>
+                <div> {str("District: " ++ Ward.name(p))} </div>
+              )}
+            </div>
+          </div>
         </div>
-        <div
-          className="mt-8 sm:grid sm:mt-5 sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
-          <dt className="text-sm leading-5 font-medium text-gray-500"> {str("Gender")} </dt>
-          <dd
-            className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">
+      </div>
+
+      <div className="grid grid-cols-2 gap-x-2 mt-3 mb-2 pt-3 pb-2 border-b-2 border-gray-200">
+        <div className="text-sm leading-5 font-medium text-gray-500"> {str("Gender")} </div>
+        <div className="text-sm leading-5 text-gray-900">
+          <div className="sm:mt-0 sm:col-span-2">
             {str(
               switch PatientInfo.gender(patient) {
               | 1 => "Male"
@@ -224,79 +277,71 @@ let showPatientCard = (patient, _send) => {
               | _ => ""
               },
             )}
-          </dd>
-        </div>
-        <div
-          className="mt-8 sm:grid sm:mt-5 sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
-          <dt className="text-sm leading-5 font-medium text-gray-500">
-            {str("Number Of Aged Dependents")}
-          </dt>
-          <dd
-            className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">
-            {str(string_of_int(PatientInfo.numberOfAgedDependents(patient)))}
-          </dd>
-        </div>
-        <div
-          className="mt-8 sm:grid sm:mt-5 sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
-          <dt className="text-sm leading-5 font-medium text-gray-500">
-            {str("Number Of Chronic Diseased Dependents")}
-          </dt>
-          <dd
-            className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">
-            {str(string_of_int(PatientInfo.numberOfChronicDiseasedDependents(patient)))}
-          </dd>
-        </div>
-        {switch PatientInfo.facilityObject(patient) {
-        | Some(facility) =>
-          <div
-            className="mt-8 sm:grid sm:mt-5 sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
-            <dt className="text-sm leading-5 font-medium text-gray-500">
-              {str("Last visited facility")}
-            </dt>
-            <dd
-              className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">
-              {str(Facility.name(facility))}
-            </dd>
           </div>
-        | None => React.null
-        }}
-        {switch PatientInfo.willDonateBlood(patient) {
-        | Some(willDonateBlood) =>
-          <div
-            className="mt-8 sm:grid sm:mt-5 sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
-            <dt className="text-sm leading-5 font-medium text-gray-500">
-              {str("Willing to Donate Blood")}
-            </dt>
-            <dd
-              className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">
-              {str(willDonateBlood ? "Yes" : "No")}
-            </dd>
-          </div>
-        | None => React.null
-        }}
-        {switch PatientInfo.isDeclaredPositive(patient) {
-        | Some(isDeclaredPositive) =>
-          <div
-            className="mt-8 sm:grid sm:mt-5 sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
-            <dt className="text-sm leading-5 font-medium text-gray-500">
-              {str("Has been declared postive")}
-            </dt>
-            <dd
-              className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">
-              {str(isDeclaredPositive ? "Yes" : "No")}
-            </dd>
-          </div>
-        | None => React.null
-        }}
-      </dl>
-      <div
-        className="mt-8 sm:grid sm:mt-5 sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
-        <dt className="text-sm leading-5 font-medium text-gray-500"> {str("Covid-19 Status")} </dt>
-        <dd
-          className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">
-          {str(PatientInfo.diseaseStatus(patient))}
-        </dd>
+        </div>
       </div>
+
+      <div className="grid grid-cols-2 gap-x-2 mt-3 mb-2 pt-3 pb-2 border-b-2 border-gray-200">
+        <div className="text-sm leading-5 font-medium text-gray-500"> {str("Number Of Aged Dependents")} </div>
+        <div className="text-sm leading-5 text-gray-900">
+          <div className="sm:mt-0 sm:col-span-2">
+            {str(string_of_int(PatientInfo.numberOfAgedDependents(patient)))}
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-x-2 mt-3 mb-2 pt-3 pb-2 border-b-2 border-gray-200">
+        <div className="text-sm leading-5 font-medium text-gray-500"> {str("Number Of Chronic Diseased Dependents")} </div>
+        <div className="text-sm leading-5 text-gray-900">
+          <div className="sm:mt-0 sm:col-span-2">
+            {str(string_of_int(PatientInfo.numberOfChronicDiseasedDependents(patient)))}
+          </div>
+        </div>
+      </div>
+
+
+      {switch PatientInfo.facilityObject(patient) {
+      | Some(facility) =>
+
+        <div className="grid grid-cols-2 gap-x-2 mt-3 mb-2 pt-3 pb-2 border-b-2 border-gray-200">
+          <div className="text-sm leading-5 font-medium text-gray-500"> {str("Last visited facility")} </div>
+          <div className="text-sm leading-5 text-gray-900">
+            <div className="sm:mt-0 sm:col-span-2">
+              {str(Facility.name(facility))}
+            </div>
+          </div>
+        </div>
+      | None => React.null
+      }}
+
+      {switch PatientInfo.willDonateBlood(patient) {
+      | Some(willDonateBlood) =>
+
+        <div className="grid grid-cols-2 gap-x-2 mt-3 mb-2 pt-3 pb-2 border-b-2 border-gray-200">
+          <div className="text-sm leading-5 font-medium text-gray-500"> {str("Willing to Donate Blood")} </div>
+          <div className="text-sm leading-5 text-gray-900">
+            <div className="sm:mt-0 sm:col-span-2">
+              {str(willDonateBlood ? "Yes" : "No")}
+            </div>
+          </div>
+        </div>
+      | None => React.null
+      }}
+
+      {switch PatientInfo.isDeclaredPositive(patient) {
+      | Some(isDeclaredPositive) =>
+
+        <div className="grid grid-cols-2 gap-x-2 mt-3 mb-2 pt-3 pb-2 border-b-2 border-gray-200">
+          <div className="text-sm leading-5 font-medium text-gray-500"> {str("Has been declared postive")} </div>
+          <div className="text-sm leading-5 text-gray-900">
+            <div className="sm:mt-0 sm:col-span-2">
+              {str(isDeclaredPositive ? "Yes" : "No")}
+            </div>
+          </div>
+        </div>
+
+      | None => React.null
+      }}
     </div>
   </div>
 }
@@ -327,10 +372,13 @@ let make = (~patientInfo, ~token) => {
       {str(PatientInfo.name(patientInfo))}
     </h1>
     <div className="font-mono text-xs"> {str("Unique Id: " ++ PatientInfo.id(patientInfo))} </div>
-    {showPatientCard(patientInfo, send)}
-    {switch state {
-    | Loading => SkeletonLoading.multiple(~count=3, ~element=SkeletonLoading.card())
-    | Loaded(consultation) => <div> {showConsultationCard(consultation)} </div>
-    }}
+    <div className="bg-gray-100">
+      {showCovidStatus(patientInfo)}
+      {switch state {
+      | Loading => SkeletonLoading.multiple(~count=3, ~element=SkeletonLoading.card())
+      | Loaded(consultation) => <div> {showConsultationCard(consultation)} </div>
+      }}
+      {showPatientCard(patientInfo, send)}
+    </div>
   </div>
 }
