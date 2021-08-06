@@ -69,17 +69,18 @@ let symptomToString = symptom => {
 
 let showConsultationCard = consultation => {
   <div className="rounded-lg px-4 pt-2 mt-4">
-    <div className="grid grid-cols-2 gap-x-5 text-sm">
+    <div className="grid grid-cols-2 gap-x-3 text-sm">
       <div className="bg-white p-4">
         {switch Consultation.admitted(consultation) {
-          | true => <div className="flex">
-                      <div>
-                        <div className="rounded-full bg-red-100 p-2 text-center">
-                          <i className="text-red-400 fas fa-bed" />
-                        </div>
-                      </div>
-                      <div className="m-auto font-bold ml-3">{str("ADMITTED")}</div>
-                    </div>
+          | true =>
+          <div className="flex">
+            <div>
+              <div className="rounded-full bg-red-100 p-2 text-center">
+                <i className="text-red-400 fas fa-bed" />
+              </div>
+            </div>
+            <div className="m-auto font-bold ml-3">{str("ADMITTED")}</div>
+          </div>
           | false =>
             <div className="flex">
               <div>
@@ -93,7 +94,14 @@ let showConsultationCard = consultation => {
             </div>
         }}
       </div>
-      <div className="bg-white p-4">{str("Oxygen Saturation")}</div>
+      <div className="flex bg-white p-4 text-center">
+        <div className="my-auto">
+          <div className="rounded-full bg-blue-100 p-1 pl-2 pr-2 text-center">
+            <i className="text-blue-400 text-lg fas fa-atom"></i>
+          </div>
+        </div>
+        <div className="m-auto ml-2">{str("Oxygen Saturation")}</div>
+      </div>
     </div>
     {switch Consultation.category(consultation) {
         | Some(category) =>
