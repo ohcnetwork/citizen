@@ -18,9 +18,9 @@ let getStatusType = (status: string) => {
 
 let statusLabel = (status: covidStatus) => {
   switch status {
-  | POSITIVE => "w-max-content text-xs bg-red-100 border border-red-300 flex-shrink leading-normal text-red-600 font-semibold px-3 py-px rounded"
-  | SUSPECTED => "w-max-content text-xs bg-yellow-100 border border-yellow-300 flex-shrink leading-normal text-yellow-400 font-semibold px-3 py-px rounded"
-  | _ => "w-max-content text-xs bg-yellow-100 border border-yellow-300 flex-shrink leading-normal text-yellow-400 font-semibold px-3 py-px rounded"
+  | POSITIVE => "w-max-content text-xs bg-red-100 border border-red-300 flex-shrink leading-normal text-red-600 font-semibold px-3 py-px rounded mx-auto"
+  | SUSPECTED => "w-max-content text-xs bg-yellow-100 border border-yellow-300 flex-shrink leading-normal text-yellow-400 font-semibold px-3 py-px rounded mx-auto"
+  | _ => "w-max-content text-xs bg-yellow-100 border border-yellow-300 flex-shrink leading-normal text-yellow-400 font-semibold px-3 py-px rounded mx-auto"
   }
 }
 
@@ -72,8 +72,25 @@ let showConsultationCard = consultation => {
     <div className="grid grid-cols-2 gap-x-5 text-sm">
       <div className="bg-white p-4">
         {switch Consultation.admitted(consultation) {
-          | true => <div className="font-bold">{str("ADMITTED")}</div>
-          | false => <div><text className="font-bold">{str("NOT ")}</text>{str("Admitted")}</div>
+          | true => <div className="flex">
+                      <div>
+                        <div className="rounded-full bg-red-100 p-2 text-center">
+                          <i className="text-red-400 fas fa-bed" />
+                        </div>
+                      </div>
+                      <div className="m-auto font-bold ml-3">{str("ADMITTED")}</div>
+                    </div>
+          | false =>
+            <div className="flex">
+              <div>
+                <div className="rounded-full bg-green-100 text-center p-2">
+                  <i className="text-green-400 fas fa-bed" />
+                </div>
+              </div>
+              <div className="m-auto ml-3">
+                <text className="font-bold">{str("NOT ")}</text>{str("Admitted")}
+              </div>
+            </div>
         }}
       </div>
       <div className="bg-white p-4">{str("Oxygen Saturation")}</div>
@@ -187,16 +204,15 @@ let showConsultationCard = consultation => {
 }
 
 let showCovidStatus = (patient) => {
-  <div key={PatientInfo.id(patient)} className="rounded-lg shadow px-4 py-2 mt-4">
+  <div key={PatientInfo.id(patient)} className="rounded-lg px-4 py-2 mt-4">
     <div
-      className="bg-white sm:grid sm:mt-5 sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5 p-4">
-      <dt className="text-sm leading-5 font-medium text-gray-500"> {str("Covid-19 Status")} </dt>
-      <dd
-        >
+      className="bg-white p-4 flex border-gray-200">
+      <div className="text-sm leading-5 font-medium text-gray-500 mr-4"> {str("Covid-19 Status")} </div>
+      <div className="text-center">
         <div className={statusLabel(getStatusType(PatientInfo.diseaseStatus(patient)))}>
           {str(PatientInfo.diseaseStatus(patient))}
         </div>
-      </dd>
+      </div>
     </div>
   </div>
 }
