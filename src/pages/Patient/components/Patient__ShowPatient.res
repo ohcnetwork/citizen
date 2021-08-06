@@ -146,21 +146,36 @@ let showConsultationCard = consultation => {
 
       {switch Consultation.examination_details(consultation) {
         | Some(examination) =>
-          <div
-            className="bg-white p-4 mt-8 sm:grid sm:mt-5 sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
-            <dt className="leading-5 font-semibold text-gray-500">
-              {str("Examination Details:")}
-            </dt>
-            <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-              {str(examination)}
-            </dd>
+
+          <div className="flex bg-white p-4 mt-4">
+            <div className="my-auto">
+              <div className="rounded-full bg-purple-100 text-center p-2 pl-3 pr-3 text-center">
+                <i className="text-purple-600 text-lg fas fa-notes-medical" />
+              </div>
+            </div>
+
+            <div
+              className="p-4 lg:flex">
+              <div className="leading-5 font-semibold text-gray-500 mr-3"> {str("Examination Details:")} </div>
+              <div className="font-semibold text-sm leading-5 text-gray-900">
+                {str(examination)}
+              </div>
+            </div>
           </div>
         | None => React.null
         }}
 
       <div className="bg-white mt-4 p-4 pb-0">
-        <div className="font-bold text-lg my-3">{str("Patient Details")}</div>
-          <div className="grid grid-cols-1 text-sm mt-4">
+          <div className="flex bg-white p-4 pl-0 mt-4">
+            <div className="my-auto">
+              <div className="rounded-full bg-pink-100 text-center p-2 pl-3 pr-3 text-center">
+                <i className="text-pink-600 text-lg fas fa-user" />
+              </div>
+            </div>
+            <div className="ml-3 font-bold text-lg my-3">{str("Patient Details")}</div>
+          </div>
+
+          <div className="grid grid-cols-1 text-sm mt-2">
 
             {switch Consultation.admission_date(consultation) {
             | Some(date) =>
