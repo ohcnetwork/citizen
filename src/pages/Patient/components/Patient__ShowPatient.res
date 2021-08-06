@@ -85,7 +85,7 @@ let showConsultationCard = consultation => {
             <div className="flex">
               <div>
                 <div className="rounded-full bg-green-100 text-center p-2">
-                  <i className="text-green-400 fas fa-bed" />
+                  <i className="text-green-400 text-lg fas fa-bed" />
                 </div>
               </div>
               <div className="m-auto ml-3">
@@ -96,35 +96,50 @@ let showConsultationCard = consultation => {
       </div>
       <div className="flex bg-white p-4 text-center">
         <div className="my-auto">
-          <div className="rounded-full bg-blue-100 p-1 pl-2 pr-2 text-center">
-            <i className="text-blue-400 text-lg fas fa-atom"></i>
+          <div className="rounded-full bg-blue-100 p-2 pl-3 pr-3 text-center">
+            <i className="text-blue-600 text-lg fas fa-atom"></i>
           </div>
         </div>
         <div className="m-auto ml-2">{str("Oxygen Saturation")}</div>
       </div>
     </div>
+
     {switch Consultation.category(consultation) {
         | Some(category) =>
-          <div
-            className="bg-white p-4 mt-8 sm:grid sm:mt-5 sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
-            <dt className="leading-5 font-semibold text-gray-500"> {str("Category:")} </dt>
-            <dd className="mt-1 font-semibold text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-              {str(category)}
-            </dd>
+          <div className="flex bg-white p-4 text-center mt-4">
+            <div className="my-auto">
+              <div className="rounded-full bg-indigo-100 text-center p-2 pl-3 pr-3 text-center">
+                <i className="text-indigo-600 text-lg fas fa-th-large" />
+              </div>
+            </div>
+            <div
+              className="p-4 flex justify-around">
+              <div className="leading-5 font-semibold text-gray-500 mr-3"> {str("Category:")} </div>
+              <div className="font-semibold text-sm leading-5 text-gray-900">
+                {str(category)}
+              </div>
+            </div>
           </div>
         | None => React.null
       }}
 
       {switch Consultation.consultation_notes(consultation) {
         | Some(notes) =>
-          <div
-            className="bg-white p-4 mt-8 sm:grid sm:mt-5 sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
-            <dt className="leading-5 font-semibold text-gray-500">
-              {str("Consultation Notes:")}
-            </dt>
-            <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-              {str(notes)}
-            </dd>
+
+          <div className="flex bg-white p-4 mt-4">
+            <div className="my-auto">
+              <div className="rounded-full bg-red-100 text-center p-2 pl-3 pr-3 text-center">
+                <i className="text-red-600 text-lg fas fa-stethoscope" />
+              </div>
+            </div>
+
+            <div
+              className="p-4 lg:flex">
+              <div className="leading-5 font-semibold text-gray-500 mr-3"> {str("Consultation Notes:")} </div>
+              <div className="font-semibold text-sm leading-5 text-gray-900">
+                {str(notes)}
+              </div>
+            </div>
           </div>
         | None => React.null
       }}
