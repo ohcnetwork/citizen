@@ -11,13 +11,6 @@ type state = {
   patients: array<PatientInfo.t>,
 }
 
-let getStatusType = (status: string) => {
-  switch status {
-  | "POSITIVE" =>Patient__Types.POSITIVE
-  | "SUSPECTED" => Patient__Types.SUSPECTED
-  |_ => Patient__Types.SUSPECTED
-  }
-}
 
 let statusLabel = (status: Patient__Types.covidStatus) => {
   switch status {
@@ -68,7 +61,7 @@ let showPatientCard = (patient, send) =>
     </div>
     <div className="w-auto md:w-1/4 text-xs flex justify-end mt-2 md:mt-0">
       <div
-        className={statusLabel(getStatusType(PatientInfo.diseaseStatus(patient)))}>
+        className={statusLabel(Patient__Types.getStatusType(PatientInfo.diseaseStatus(patient)))}>
         {str(PatientInfo.diseaseStatus(patient))}
       </div>
     </div>

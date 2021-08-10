@@ -5,15 +5,6 @@ type state =
   | Loaded(Consultation.t)
 
 
-
-let getStatusType = (status: string) => {
-  switch status {
-  | "POSITIVE" => Patient__Types.POSITIVE
-  | "SUSPECTED" => Patient__Types.SUSPECTED
-  |_ => SUSPECTED
-  }
-}
-
 let statusLabel = (status: Patient__Types.covidStatus) => {
   switch status {
   | POSITIVE => "w-max-content text-xs bg-red-100 border border-red-300 flex-shrink leading-normal text-red-600 font-semibold px-3 py-px rounded mx-auto"
@@ -245,7 +236,7 @@ let showCovidStatus = (patient) => {
       className="bg-white p-4 flex border-gray-200">
       <div className="text-sm leading-5 font-medium text-gray-500 mr-4"> {str("Covid-19 Status")} </div>
       <div className="text-center">
-        <div className={statusLabel(getStatusType(PatientInfo.diseaseStatus(patient)))}>
+        <div className={statusLabel(Patient__Types.getStatusType(PatientInfo.diseaseStatus(patient)))}>
           {str(PatientInfo.diseaseStatus(patient))}
         </div>
       </div>
