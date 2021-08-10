@@ -5,9 +5,6 @@ type ui =
   | Loaded
   | ShowPatient(PatientInfo.t)
 
-type covidStatus =
-  | POSITIVE
-  | SUSPECTED
 
 type state = {
   ui: ui,
@@ -16,13 +13,13 @@ type state = {
 
 let getStatusType = (status: string) => {
   switch status {
-  | "POSITIVE" => POSITIVE
-  | "SUSPECTED" => SUSPECTED
-  |_ => SUSPECTED
+  | "POSITIVE" =>Patient__Types.POSITIVE
+  | "SUSPECTED" => Patient__Types.SUSPECTED
+  |_ => Patient__Types.SUSPECTED
   }
 }
 
-let statusLabel = (status: covidStatus) => {
+let statusLabel = (status: Patient__Types.covidStatus) => {
   switch status {
   | POSITIVE => "bg-red-100 border border-red-300 flex-shrink-0 leading-normal text-red-600 font-semibold px-3 py-px rounded"
   | SUSPECTED => "bg-yellow-100 border border-yellow-300 flex-shrink-0 leading-normal text-yellow-400 font-semibold px-3 py-px rounded"

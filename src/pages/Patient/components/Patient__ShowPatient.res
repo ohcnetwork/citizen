@@ -4,19 +4,17 @@ type state =
   | Loading
   | Loaded(Consultation.t)
 
-type covidStatus =
-  | POSITIVE
-  | SUSPECTED
+
 
 let getStatusType = (status: string) => {
   switch status {
-  | "POSITIVE" => POSITIVE
-  | "SUSPECTED" => SUSPECTED
+  | "POSITIVE" => Patient__Types.POSITIVE
+  | "SUSPECTED" => Patient__Types.SUSPECTED
   |_ => SUSPECTED
   }
 }
 
-let statusLabel = (status: covidStatus) => {
+let statusLabel = (status: Patient__Types.covidStatus) => {
   switch status {
   | POSITIVE => "w-max-content text-xs bg-red-100 border border-red-300 flex-shrink leading-normal text-red-600 font-semibold px-3 py-px rounded mx-auto"
   | SUSPECTED => "w-max-content text-xs bg-yellow-100 border border-yellow-300 flex-shrink leading-normal text-yellow-400 font-semibold px-3 py-px rounded mx-auto"

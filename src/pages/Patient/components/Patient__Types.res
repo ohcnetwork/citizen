@@ -1,0 +1,3 @@
+type covidStatus =
+  | POSITIVE
+  | SUSPECTED
