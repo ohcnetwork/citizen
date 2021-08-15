@@ -5,9 +5,19 @@ type ui =
   | Loaded
   | ShowPatient(PatientInfo.t)
 
+
 type state = {
   ui: ui,
   patients: array<PatientInfo.t>,
+}
+
+
+let statusLabel = (status: Patient__Types.covidStatus) => {
+  switch status {
+  | POSITIVE => "bg-red-100 border border-red-300 flex-shrink-0 leading-normal text-red-600 font-semibold px-3 py-px rounded"
+  | SUSPECTED => "bg-yellow-100 border border-yellow-300 flex-shrink-0 leading-normal text-yellow-400 font-semibold px-3 py-px rounded"
+  | _ => "bg-yellow-100 border border-yellow-300 flex-shrink-0 leading-normal text-yellow-400 font-semibold px-3 py-px rounded"
+  }
 }
 
 let handleErrorCB = () => Js.log("Error")
@@ -24,6 +34,7 @@ let getPatientsList = (send, token) => {
   send(state => {...state, ui: Loading})
   Api.getWithToken(Routes.url("otp/patient/"), token, handleSucessCB(send), handleErrorCB)
 }
+
 
 let patientCardClasses = patient =>
   "flex flex-col md:flex-row items-start md:items-center justify-between bg-white border-l-3 p-3 md:py-6 md:px-5 mt-4 border-l-4 cursor-pointer rounded-r-lg shadow hover:border-primary-500 hover:text-primary-500 hover:shadow-md " ++ (
@@ -50,7 +61,7 @@ let showPatientCard = (patient, send) =>
     </div>
     <div className="w-auto md:w-1/4 text-xs flex justify-end mt-2 md:mt-0">
       <div
-        className="bg-orange-100 border border-yellow-300 flex-shrink-0 leading-normal text-yellow-600 font-semibold px-3 py-px rounded">
+        className={statusLabel(Patient__Types.getStatusType(PatientInfo.diseaseStatus(patient)))}>
         {str(PatientInfo.diseaseStatus(patient))}
       </div>
     </div>
