@@ -4,9 +4,7 @@
 
 ```sh
 npm install
-npm run server
-# in another tab
-npm run re:watch
+npm run dev
 ```
 
 ## Build for Production
@@ -14,5 +12,4 @@ npm run re:watch
 ```sh
 npm run clean
 npm run build
-npm run webpack:production
 ```
